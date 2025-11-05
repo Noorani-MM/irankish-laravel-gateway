@@ -3,8 +3,6 @@
 A clean, secure, and developer-friendly **Laravel** integration for **IranKish (IKC)** payment gateway.  
 This package handles **crypto envelope (AES + RSA)**, token request, redirect URL generation, and payment confirmation — so you can integrate payments in a few lines of code.
 
-> اگر فارسی می‌پسندید: این پکیج درگاه پرداخت **ایران‌کیش** را برای **لاراول** به‌صورت امن و ساده فراهم می‌کند. ساخت توکن، ساخت URL پرداخت، و تایید تراکنش، همگی در یک سرویس واحد.
-
 ---
 
 ## 🚀 Installation
