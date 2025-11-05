@@ -1,0 +1,40 @@
+# Composer vendor directory
+/vendor/
+
+# Composer lock file (for libraries, not apps)
+composer.lock
+
+# IDE / editor files
+/.idea/
+/.vscode/
+/nbproject/
+*.sublime-*
+*.swp
+*.bak
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+
+# Logs & temp
+*.log
+*.tmp
+
+# PHPUnit / test cache
+.phpunit.result.cache
+coverage/
+clover.xml
+phpunit.xml
+phpunit.xml.dist
+
+# Node & frontend stuff (if added later)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Environment files
+.env
+.env.*
