@@ -1,5 +1,5 @@
 {
-    "name": "irankish/laravel-gateway",
+    "name": "noorani-mm/irankish-laravel-gateway",
     "description": "Laravel package for integrating IranKish payment gateway (درگاه پرداخت ایران کیش برای لاراول)",
     "keywords": [
         "laravel",
@@ -9,11 +9,12 @@
         "irankish",
         "shaparak",
         "iran kish",
+        "irankish-laravel-gateway",
         "laravel-irankish",
         "laravel-payment",
         "payment-gateway"
     ],
-    "homepage": "https://github.com/irankish/laravel-gateway",
+    "homepage": "https://github.com/noorani-mm/irankish-laravel-gateway",
     "license": "MIT",
     "authors": [
         {
@@ -24,11 +25,23 @@
     "type": "library",
     "require": {
         "php": ">=8.1",
-        "illuminate/support": "^10.0"
+        "illuminate/support": "^10.0 || ^11.0",
+        "ext-curl": "*",
+        "ext-openssl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "orchestra/testbench": "^8.0 || ^9.0"
     },
     "autoload": {
         "psr-4": {
             "IranKish\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IranKish\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -38,6 +51,16 @@
             ]
         }
     },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "support": {
+        "issues": "https://github.com/noorani-mm/irankish-laravel-gateway/issues",
+        "source": "https://github.com/noorani-mm/irankish-laravel-gateway"
+    },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    }
 }
