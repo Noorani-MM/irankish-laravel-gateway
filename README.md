@@ -1,20 +1,22 @@
 # 💳 IranKish Laravel Gateway
 
-A clean, secure, and developer-friendly **Laravel** integration for **IranKish (IKC)** payment gateway.  
+A clean, secure, and developer-friendly **Laravel** integration for **IranKish (IKC)** payment gateway.
 This package handles **crypto envelope (AES + RSA)**, token request, redirect URL generation, and payment confirmation — so you can integrate payments in a few lines of code.
 
 ---
 
 ## 🚀 Installation
 
+Install via Composer:
+
 ```bash
-composer require irankish/laravel-gateway
+composer require noorani-mm/irankish-laravel-gateway
 ```
 
-Laravel auto-discovers the provider. If needed, you can register it manually:
+Laravel auto-discovers the service provider automatically.
+If you use an older Laravel version or auto-discovery is disabled, register it manually in `config/app.php`:
 
 ```php
-// config/app.php
 'providers' => [
     // ...
     IranKish\IranKishServiceProvider::class,
@@ -40,21 +42,22 @@ IRANKISH_CONFIRM_URL=https://ikc.shaparak.ir/api/v3/confirmation/purchase
 IRANKISH_PAYMENT_URL=https://ikc.shaparak.ir/TPayment/Payment/Index
 ```
 
-Then publish the config (optional, but recommended):
+Then publish the config file (optional but recommended):
 
 ```bash
-php artisan vendor:publish --tag=config
+php artisan vendor:publish --provider="IranKish\IranKishServiceProvider" --tag=config
 ```
 
 ### What each field means (Persian)
-| کلید | توضیح |
-|------|-------|
-| `IRANKISH_TERMINAL_ID` | شناسه‌ی ترمینال که توسط ایران‌کیش ارائه می‌شود. |
-| `IRANKISH_PASSWORD` | رمز عبور محرمانه مرتبط با ترمینال (برای پاکِت احراز هویت). |
-| `IRANKISH_ACCEPTOR_ID` | کد پذیرنده ثبت شده نزد ایران‌کیش. |
-| `IRANKISH_PUBLIC_KEY` | کلید عمومی RSA (متن PEM یا مسیر فایل) برای رمزنگاری. |
-| `IRANKISH_CALLBACK_URL` | آدرس بازگشت پس از پرداخت (موفق/ناموفق). |
-| `IRANKISH_*_URL` | در صورت تغییر مسیرهای IKC، می‌توانید این URLها را override کنید. |
+
+| کلید                    | توضیح                                                            |
+| ----------------------- | ---------------------------------------------------------------- |
+| `IRANKISH_TERMINAL_ID`  | شناسه‌ی ترمینال که توسط ایران‌کیش ارائه می‌شود.                  |
+| `IRANKISH_PASSWORD`     | رمز عبور محرمانه مرتبط با ترمینال (برای پاکِت احراز هویت).       |
+| `IRANKISH_ACCEPTOR_ID`  | کد پذیرنده ثبت شده نزد ایران‌کیش.                                |
+| `IRANKISH_PUBLIC_KEY`   | کلید عمومی RSA (متن PEM یا مسیر فایل) برای رمزنگاری.             |
+| `IRANKISH_CALLBACK_URL` | آدرس بازگشت پس از پرداخت (موفق/ناموفق).                          |
+| `IRANKISH_*_URL`        | در صورت تغییر مسیرهای IKC، می‌توانید این URLها را override کنید. |
 
 ---
 
@@ -63,6 +66,7 @@ php artisan vendor:publish --tag=config
 This package returns **normalized arrays** so your controllers can make decisions easily.
 
 ### `requestPayment(...)` result
+
 ```json
 {
   "url": "https://ikc.shaparak.ir/TPayment/Payment/Index?token=...",
@@ -73,6 +77,7 @@ This package returns **normalized arrays** so your controllers can make decision
 ```
 
 On failure:
+
 ```json
 {
   "url": null,
@@ -83,6 +88,7 @@ On failure:
 ```
 
 ### `confirm(...)` result
+
 ```json
 {
   "ok": true,
@@ -149,54 +155,39 @@ class PaymentController
 ## 🧩 Methods (English)
 
 ### `requestPayment(int $amount, $billInfo = null, $paymentId = null): array`
+
 Requests a payment token from IKC, builds a **ready-to-use** gateway URL, and returns a normalized response.
-- **Parameters**
-    - `amount` (int, required): Amount in **Rials**.
-    - `billInfo` (mixed, optional): Optional info per IKC docs (free-form or null).
-    - `paymentId` (string|null, optional): Your internal order/payment ID.
-- **Returns**
-    - `ok` (bool): `true` if `responseCode === "00"` **and** a non-empty `token` exists.
-    - `status` (string|null): IKC `responseCode` or `'NO_TOKEN'` / `'NETWORK_ERROR'`.
-    - `message` (string|null): IKC `description` or the error message.
-    - `url` (string|null): Gateway URL (`payment_base?token=...`) when successful; otherwise `null`.
 
 ### `confirm(string $token, string $retrievalReferenceNumber, string $systemTraceAuditNumber): array`
-Confirms a payment with IKC and returns a normalized structure.
-- **Parameters**
-    - `token` (string): IKC `tokenIdentity` from callback.
-    - `retrievalReferenceNumber` (string): IKC `RRN` from callback.
-    - `systemTraceAuditNumber` (string): IKC `STAN` from callback.
-- **Returns**
-    - `ok` (bool): `true` when `responseCode === "00"`.
-    - `status` (string|null): IKC `responseCode`.
-    - `message` (string|null): IKC `description`.
-    - `data` (array): Entire raw response from IKC for maximum compatibility.
 
-### `redirectToGateway(string $token)` *(optional)*
-Builds a redirect response to IKC using the configured `IRANKISH_PAYMENT_URL`.
+Confirms a payment with IKC and returns a normalized structure.
+
+### `redirectToGateway(string $token)`
+
+Redirects directly to the gateway using the configured `IRANKISH_PAYMENT_URL`.
 
 ---
 
 ## 🔒 Security Notes
 
-- Keep your **terminal credentials** and **public key** secret. Do not commit them.
-- Use HTTPS for your callback URL.
-- Validate and log every callback — do not rely solely on client-side redirects.
+* Keep your **terminal credentials** and **public key** secret.
+* Use HTTPS for your callback URL.
+* Always validate and log callbacks from IKC.
 
 ---
 
 ## 🐞 Troubleshooting
 
-- **`NETWORK_ERROR`**: Connectivity, SSL, or timeout issues. Check server firewall/network and SSL validation.
-- **`NO_TOKEN`**: IKC responded with `00` but no token field. Log the raw response and contact IKC if persistent.
-- **Non-`00` responseCode**: Read `message`/`description` to show a helpful error to the user/admin.
+* **`NETWORK_ERROR`** → network, SSL, or timeout problem.
+* **`NO_TOKEN`** → IKC responded `00` but token field missing.
+* Non-`00` responseCode → check `message`/`description`.
 
 ---
 
 ## ✅ Version Compatibility
 
-- PHP `>= 8.1`
-- Laravel `^10.0`
+* PHP `>= 8.1`
+* Laravel `^10.0` or `^11.0`
 
 ---
 
