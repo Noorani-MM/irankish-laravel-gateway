@@ -83,6 +83,7 @@ class IranKish
                 'status'  => $ikc->responseCode,
                 'message' => $ikc->description,
                 'url'     => $url,
+                'token'   => $ikc->result['token'],
             ];
         } catch (\Throwable $e) {
             return [
@@ -90,6 +91,7 @@ class IranKish
                 'status'  => 'NETWORK_ERROR',
                 'message' => $e->getMessage(),
                 'url'     => null,
+                'token'   => null,
             ];
         }
     }

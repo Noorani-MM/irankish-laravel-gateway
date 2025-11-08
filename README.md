@@ -72,7 +72,8 @@ This package returns **normalized arrays** so your controllers can make decision
   "url": "https://ikc.shaparak.ir/TPayment/Payment/Index?token=...",
   "ok": true,
   "message": "Approved",
-  "status": "00"
+  "status": "00",
+  "token": "xxxxxxxxxxx"
 }
 ```
 
@@ -83,7 +84,8 @@ On failure:
   "url": null,
   "ok": false,
   "message": "Token missing in IKC response",
-  "status": "NO_TOKEN"
+  "status": "NO_TOKEN",
+  "token": null
 }
 ```
 
