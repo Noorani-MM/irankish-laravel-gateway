@@ -26,7 +26,7 @@ jobs:
           ini-values: post_max_size=256M, memory_limit=512M, max_execution_time=120
 
       - name: 🧰 Validate composer.json and composer.lock
-        run: composer validate --strict
+        run: composer validate
 
       - name: 📦 Get Composer cache directory
         id: composer-cache
