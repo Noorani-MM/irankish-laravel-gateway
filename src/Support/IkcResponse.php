@@ -3,36 +3,132 @@
 namespace IranKish\Support;
 
 /**
- * Value object mirroring IKC response body.
+ * این کلاس پاسخ‌های درگاه ایران‌کیش را در قالب یک آبجکت مدیریت می‌کند.
+ * هدف این است که توسعه‌دهنده بتواند با متدهای خوانا و قابل پیش‌بینی
+ * به وضعیت و داده‌های بازگشتی دسترسی داشته باشد.
  *
- * Typical shapes:
- *  - Tokenization (make): { responseCode: "00", description: "...", result: { token: "...", responseCode: "00" } }
- *  - Confirmation (purchase): { responseCode: "00", description: "...", ...other fields }
+ * معمولاً در پاسخ API ایران‌کیش ساختار زیر وجود دارد:
+ * {
+ *   "responseCode": "00",
+ *   "description": "Successful",
+ *   "token": "...",
+ *   "retrievalReferenceNumber": "...",
+ *   "systemTraceAuditNumber": "...",
+ *   "amount": 10000,
+ *   "maskedPan": "6037********1234",
+ *   "sha256OfPan": "..."
+ * }
  */
 class IkcResponse
 {
-    /** @var string|null */
-    public $responseCode;
+    /**
+     * پاسخ خام دریافتی از سرور ایران‌کیش
+     */
+    protected array $raw;
 
-    /** @var string|null */
-    public $description;
-
-    /** @var array|null */
-    public $result;
-
-    /** @var array Raw response */
-    public $raw;
-
-    public function __construct(array $raw)
+    /**
+     * نمونه جدید با آرایه پاسخ دریافتی ساخته می‌شود.
+     */
+    public function __construct(array $response)
     {
-        $this->raw          = $raw;
-        $this->responseCode = $raw['responseCode'] ?? null;
-        $this->description  = $raw['description']  ?? null;
-        $this->result       = $raw['result']       ?? null;
+        $this->raw = $response;
     }
 
-    public function ok(): bool
+    /**
+     * بررسی موفق بودن تراکنش
+     * اگر کد پاسخ برابر "00" باشد یعنی عملیات موفق بوده.
+     */
+    public function isSuccessful(): bool
     {
-        return $this->responseCode === '00';
+        return $this->get('responseCode') === '00';
+    }
+
+    /**
+     * برگرداندن توضیح متنی از پاسخ درگاه (description)
+     */
+    public function message(): ?string
+    {
+        return $this->get('description');
+    }
+
+    /**
+     * دریافت مقدار توکن پرداخت در پاسخ makeToken
+     */
+    public function token(): ?string
+    {
+        return $this->get('token');
+    }
+
+    /**
+     * شماره ارجاع بانکی (RRN)
+     */
+    public function rrn(): ?string
+    {
+        return $this->get('retrievalReferenceNumber');
+    }
+
+    /**
+     * شماره پیگیری (STAN)
+     */
+    public function stan(): ?string
+    {
+        return $this->get('systemTraceAuditNumber');
+    }
+
+    /**
+     * مبلغ تراکنش (amount)
+     */
+    public function amount(): ?int
+    {
+        $amount = $this->get('amount');
+        return $amount !== null ? (int) $amount : null;
+    }
+
+    /**
+     * شماره کارت ماسک‌شده (maskedPan)
+     */
+    public function cardMasked(): ?string
+    {
+        return $this->get('maskedPan');
+    }
+
+    /**
+     * هش کارت (sha256OfPan)
+     */
+    public function cardHash(): ?string
+    {
+        return $this->get('sha256OfPan');
+    }
+
+    /**
+     * دسترسی مستقیم به فیلد خاص از پاسخ
+     */
+    public function get(string $key, mixed $default = null): mixed
+    {
+        return $this->raw[$key] ?? $default;
+    }
+
+    /**
+     * تمام داده‌های خام پاسخ را برمی‌گرداند.
+     */
+    public function toArray(): array
+    {
+        return $this->raw;
+    }
+
+    /**
+     * تبدیل به JSON برای استفاده در لاگ یا دیباگ
+     */
+    public function toJson(int $options = JSON_PRETTY_PRINT): string
+    {
+        return json_encode($this->raw, $options | JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * در صورت نیاز برای log یا dd()
+     */
+    public function __toString(): string
+    {
+        return $this->toJson();
     }
 }

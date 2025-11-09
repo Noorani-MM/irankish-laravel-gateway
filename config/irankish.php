@@ -1,28 +1,61 @@
 <?php
 
 return [
-    // Credentials
-    'terminal_id'   => env('IRANKISH_TERMINAL_ID', ''),
-    'password'      => env('IRANKISH_PASSWORD', ''),
-    'acceptor_id'   => env('IRANKISH_ACCEPTOR_ID', ''),
-    'public_key'    => env('IRANKISH_PUBLIC_KEY', ''), // PEM content or absolute file path
 
-    // Callback URL (your controller route)
-    'callback_url'  => env('IRANKISH_CALLBACK_URL', ''),
+    /*
+    |--------------------------------------------------------------------------
+    | IranKish Gateway Base URL
+    |--------------------------------------------------------------------------
+    | آدرس اصلی درگاه پرداخت ایران‌کیش.
+    | معمولاً نباید تغییر کند مگر در محیط تست یا سرور آزمایشی.
+    */
+    'base_url' => env('IRANKISH_BASE_URL', 'https://ikc.shaparak.ir'),
 
-    // Endpoints (override in .env if IKC changes)
-    'endpoints' => [
-        'make_token'   => env('IRANKISH_MAKE_TOKEN_URL', 'https://ikc.shaparak.ir/api/v3/tokenization/make'),
-        'confirm'      => env('IRANKISH_CONFIRM_URL',   'https://ikc.shaparak.ir/api/v3/confirmation/purchase'),
-        // base URL to redirect user to the gateway with ?token=...
-        'payment_base' => env('IRANKISH_PAYMENT_URL',   'https://ikc.shaparak.ir/TPayment/Payment/Index'),
-        // اگر مستندات شما مسیر iuiv3/IPG/Index را الزام می‌کند، مقدار بالا را در .env عوض کنید.
-    ],
+    /*
+    |--------------------------------------------------------------------------
+    | Terminal and Acceptor Information
+    |--------------------------------------------------------------------------
+    | شناسه‌های پذیرنده و پایانه که از پنل ایران‌کیش دریافت می‌شوند.
+    | این مقادیر برای هر کسب‌وکار منحصربه‌فرد هستند.
+    */
+    'terminal_id'  => env('IRANKISH_TERMINAL_ID'),
+    'acceptor_id'  => env('IRANKISH_ACCEPTOR_ID'),
+    'pass_phrase'  => env('IRANKISH_PASS_PHRASE'),
 
-    // HTTP options
-    'http' => [
-        'timeout'          => 20,
-        'connect_timeout'  => 10,
-        'verify_ssl'       => true,
-    ],
+    /*
+    |--------------------------------------------------------------------------
+    | Callback URL
+    |--------------------------------------------------------------------------
+    | آدرسی که پس از پرداخت موفق یا ناموفق کاربر به آن هدایت می‌شود.
+    */
+    'callback_url' => env('IRANKISH_CALLBACK_URL', config('app.url') . '/payment/irankish/callback'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Public Key
+    |--------------------------------------------------------------------------
+    | کلید عمومی ایران‌کیش (PEM) برای رمزگذاری پاکت دیجیتال.
+    | توصیه می‌شود در .env ذخیره شود و شامل عبارت BEGIN/END PUBLIC KEY باشد.
+    */
+    'public_key' => env('IRANKISH_PUBLIC_KEY'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | RSA Padding Mode
+    |--------------------------------------------------------------------------
+    | نوع padding برای رمزگذاری RSA.
+    | مقدار مجاز:
+    |   OPENSSL_PKCS1_PADDING   (پیش‌فرض، سازگار با بیشتر سرورها)
+    |   OPENSSL_PKCS1_OAEP_PADDING (در صورت الزام خاص)
+    */
+    'rsa_padding' => env('IRANKISH_RSA_PADDING', OPENSSL_PKCS1_PADDING),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logging
+    |--------------------------------------------------------------------------
+    | اگر true باشد، درخواست‌ها و پاسخ‌ها در لاگ ثبت می‌شوند.
+    | توصیه می‌شود فقط در محیط توسعه فعال شود.
+    */
+    'logging' => env('IRANKISH_LOGGING', false),
 ];
