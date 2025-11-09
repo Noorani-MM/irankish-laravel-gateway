@@ -48,17 +48,22 @@
         "laravel": {
             "providers": [
                 "IranKish\\IranKishServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "IranKish": "IranKish\\Facades\\IranKish"
+            }
         }
     },
     "scripts": {
-        "test": "phpunit"
+        "test": [
+            "@php vendor/bin/phpunit --colors=always --testdox"
+        ]
     },
     "support": {
         "issues": "https://github.com/noorani-mm/irankish-laravel-gateway/issues",
         "source": "https://github.com/noorani-mm/irankish-laravel-gateway"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
