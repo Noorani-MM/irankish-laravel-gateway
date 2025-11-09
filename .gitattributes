@@ -24,7 +24,7 @@
 
 # Keep essential package files
 README.md           export-ignore=false
+README-Fa.md        export-ignore=false
 LICENSE             export-ignore=false
 composer.json       export-ignore=false
-config/             export-ignore=false
 src/                export-ignore=false
