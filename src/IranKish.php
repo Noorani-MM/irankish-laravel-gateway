@@ -52,7 +52,7 @@ class IranKish
                     'amount'            => $amount,
                     'billInfo'          => $billInfo,
                     'paymentId'         => $paymentId,
-                    'requestId'         => uniqid('', true),
+                    'requestId'         => time().mt_rand(1000, 9999),
                     'requestTimestamp'  => time(),
                     'revertUri'         => $this->cfg('callback_url'),
                     'terminalId'        => $this->cfg('terminal_id'),
